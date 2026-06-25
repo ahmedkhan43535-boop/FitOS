@@ -1097,5 +1097,316 @@
     window.togglePass = togglePass;
 
     /* ── PASSWORD STRENGTH INDICATOR ── */
-    {
+        /* ── PASSWORD STRENGTH INDICATOR ── */
+    function checkPasswordStrength(val) {
+      const wrap  = document.getElementById('strengthWrap');
+      const fill  = document.getElementById('strengthFill');
+      const label = document.getElementById('strengthLabel');
+      if (!val) { wrap.style.display = 'none'; return; }
+      wrap.style.display = '';
+      let score = 0;
+      if (val.length >= 8)           score++;
+      if (/[A-Z]/.test(val))         score++;
+      if (/[0-9]/.test(val))         score++;
+      if (/[^A-Za-z0-9]/.test(val))  score++;
+      const levels = [
+        { w:'25%',  c:'#ef4444', t:'Weak'   },
+        { w:'25%',  c:'#ef4444', t:'Weak'   },
+        { w:'50%',  c:'#f97316', t:'Fair'   },
+        { w:'75%',  c:'#3b82f6', t:'Good'   },
+        { w:'100%', c:'#22c55e', t:'Strong' }
+      ];
+      const lvl             = levels[score];
+      fill.style.width      = lvl.w;
+      fill.style.background = lvl.c;
+      label.textContent     = lvl.t;
+      label.style.color     = lvl.c;
+    }
+    window.checkPasswordStrength = checkPasswordStrength;
+
+
+    /* ── FORM EVENT DISPATCHERS ── */
+    function handleLogin(e) {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent('fitos:login', {
+        detail: {
+          email:    document.getElementById('loginEmail').value.trim(),
+          password: document.getElementById('loginPassword').value
+        }
+      }));
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent('fitos:signup', {
+        detail: {
+          name:     document.getElementById('signupName').value.trim(),
+          email:    document.getElementById('signupEmail').value.trim(),
+          password: document.getElementById('signupPassword').value
+        }
+      }));
+    }
+
+    function handleGoogleSignIn() {
+      window.dispatchEvent(new CustomEvent('fitos:googleSignIn'));
+    }
+
+    function handleForgotPassword(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      if (!email) {
+        showToast('Enter your email address first', 'warning');
+        return;
+      }
+      window.dispatchEvent(new CustomEvent('fitos:forgotPassword', {
+        detail: { email }
+      }));
+    }
+
+    window.handleLogin          = handleLogin;
+    window.handleSignup         = handleSignup;
+    window.handleGoogleSignIn   = handleGoogleSignIn;
+    window.handleForgotPassword = handleForgotPassword;
+
+
+    /* ── ONBOARDING — 15 QUESTIONS ── */
+    const QUESTIONS = [
+      {
+        id: 'goal', type: 'choice',
+        text: 'What is your primary fitness goal?',
+        options: ['Lose weight','Build muscle','Improve endurance','Stay healthy & fit','Increase strength']
+      },
+      {
+        id: 'gender', type: 'choice',
+        text: 'What is your biological sex?',
+        options: ['Male','Female','Prefer not to say']
+      },
+      {
+        id: 'age', type: 'number',
+        text: 'How old are you?',
+        placeholder: 'e.g. 25', unit: 'years', min: 10, max: 99
+      },
+      {
+        id: 'height', type: 'number',
+        text: 'What is your height?',
+        placeholder: 'e.g. 175', unit: 'cm', min: 100, max: 250
+      },
+      {
+        id: 'weight', type: 'number',
+        text: 'What is your current weight?',
+        placeholder: 'e.g. 70', unit: 'kg', min: 30, max: 300
+      },
+      {
+        id: 'targetWeight', type: 'number',
+        text: 'What is your target weight?',
+        placeholder: 'e.g. 65', unit: 'kg', min: 30, max: 300
+      },
+      {
+        id: 'level', type: 'choice',
+        text: 'What is your current fitness level?',
+        options: ['Complete beginner (never worked out)','Some experience (under 6 months)','Intermediate (6 months – 2 years)','Advanced (2+ years)']
+      },
+      {
+        id: 'days', type: 'choice',
+        text: 'How many days per week can you work out?',
+        options: ['2 days','3 days','4 days','5 days','6 days']
+      },
+      {
+        id: 'duration', type: 'choice',
+        text: 'How long can you work out per session?',
+        options: ['20–30 minutes','30–45 minutes','45–60 minutes','60–90 minutes']
+      },
+      {
+        id: 'equipment', type: 'multi',
+        text: 'What equipment do you have? (select all that apply)',
+        options: ['No equipment (bodyweight only)','Dumbbells','Barbell & plates','Full gym access','Resistance bands','Pull-up bar']
+      },
+      {
+        id: 'injuries', type: 'multi',
+        text: 'Do you have any injuries or physical limitations?',
+        options: ['None','Knee pain','Lower back pain','Shoulder issues','Wrist pain','Hip pain','Other']
+      },
+      {
+        id: 'diet', type: 'choice',
+        text: 'What best describes your diet?',
+        options: ['Vegetarian','Non-vegetarian','Vegan','Eggetarian','Jain']
+      },
+      {
+        id: 'meals', type: 'choice',
+        text: 'How many meals do you eat per day?',
+        options: ['2 meals','3 meals','4 meals','5 or more meals']
+      },
+      {
+        id: 'activity', type: 'choice',
+        text: 'How active are you outside the gym?',
+        options: ['Sedentary (desk job, minimal movement)','Lightly active (some daily walking)','Moderately active (on feet most of day)','Very active (physical labour)']
+      },
+      {
+        id: 'motivation', type: 'choice',
+        text: 'What keeps you most motivated?',
+        options: ['Seeing numbers improve','Looking better in the mirror','Feeling stronger','Long-term health','Keeping a daily streak']
+      }
+    ];
+
+    let obIdx = 0;
+    const obAnswers = {};
+
+    function renderOnboard() {
+      const q     = QUESTIONS[obIdx];
+      const total = QUESTIONS.length;
+
+      document.getElementById('onboardFill').style.width =
+        ((obIdx / total) * 100) + '%';
+      document.getElementById('onboardStepLabel').textContent =
+        `Step ${obIdx + 1} of ${total}`;
+      document.getElementById('onboardBackBtn').style.display =
+        obIdx > 0 ? '' : 'none';
+      document.getElementById('onboardNextBtn').innerHTML =
+        obIdx === total - 1
+          ? 'Build My Plan <i class="fa fa-rocket"></i>'
+          : 'Next <i class="fa fa-arrow-right"></i>';
+
+      let html = `<div class="ob-q ob-enter">
+        <h3 class="ob-q__text">${q.text}</h3>`;
+
+      if (q.type === 'choice') {
+        html += `<div class="ob-choices">`;
+        q.options.forEach(opt => {
+          const sel     = obAnswers[q.id] === opt ? 'ob-choice--on' : '';
+          const safeOpt = opt.replace(/'/g, "\\'");
+          html += `<button class="ob-choice ${sel}"
+            onclick="pickOb('${q.id}','${safeOpt}',this)">${opt}</button>`;
+        });
+        html += `</div>`;
+
+      } else if (q.type === 'multi') {
+        html += `<p class="ob-hint">Select all that apply</p>
+          <div class="ob-choices ob-choices--wrap">`;
+        q.options.forEach(opt => {
+          const arr     = obAnswers[q.id] || [];
+          const sel     = arr.includes(opt) ? 'ob-choice--on' : '';
+          const safeOpt = opt.replace(/'/g, "\\'");
+          html += `<button class="ob-choice ${sel}"
+            onclick="toggleOb('${q.id}','${safeOpt}',this)">${opt}</button>`;
+        });
+        html += `</div>`;
+
+      } else if (q.type === 'number') {
+        const v = obAnswers[q.id] || '';
+        html += `<div class="ob-num-row">
+          <input class="ob-num-input" type="number"
+            value="${v}"
+            placeholder="${q.placeholder}"
+            min="${q.min}" max="${q.max}"
+            oninput="obAnswers['${q.id}']=this.value"
+            onchange="obAnswers['${q.id}']=this.value" />
+          <span class="ob-unit">${q.unit}</span>
+        </div>`;
+      }
+
+      html += `</div>`;
+      document.getElementById('onboardBody').innerHTML = html;
+    }
+
+    function pickOb(id, val, el) {
+      obAnswers[id] = val;
+      el.closest('.ob-choices')
+        .querySelectorAll('.ob-choice')
+        .forEach(b => b.classList.remove('ob-choice--on'));
+      el.classList.add('ob-choice--on');
+    }
+
+    function toggleOb(id, val, el) {
+      if (!obAnswers[id]) obAnswers[id] = [];
+      const i = obAnswers[id].indexOf(val);
+      if (i > -1) {
+        obAnswers[id].splice(i, 1);
+        el.classList.remove('ob-choice--on');
+      } else {
+        obAnswers[id].push(val);
+        el.classList.add('ob-choice--on');
+      }
+    }
+
+    function onboardGoNext() {
+      const q   = QUESTIONS[obIdx];
+      const ans = obAnswers[q.id];
+      const bad = !ans
+        || (Array.isArray(ans) && ans.length === 0)
+        || (typeof ans === 'string' && ans.trim() === '');
+
+      if (bad) {
+        showToast('Please answer this question to continue', 'warning');
+        return;
+      }
+      if (obIdx < QUESTIONS.length - 1) {
+        obIdx++;
+        renderOnboard();
+      } else {
+        finishOnboarding();
+      }
+    }
+
+    function onboardGoBack() {
+      if (obIdx > 0) { obIdx--; renderOnboard(); }
+    }
+
+    function finishOnboarding() {
+      showToast('Building your personalized plan... 🚀', 'info');
+      window.dispatchEvent(new CustomEvent('fitos:onboardingComplete', {
+        detail: { answers: obAnswers }
+      }));
+    }
+
+    window.pickOb        = pickOb;
+    window.toggleOb      = toggleOb;
+    window.onboardGoNext = onboardGoNext;
+    window.onboardGoBack = onboardGoBack;
+
+    /* Open onboarding after successful signup — triggered by auth.js */
+    window.addEventListener('fitos:openOnboarding', () => {
+      obIdx = 0;
+      switchPanel('onboard');
+      renderOnboard();
+    });
+
+
+    /* ── TOAST NOTIFICATIONS ── */
+    function showToast(msg, type = 'info') {
+      const icons = {
+        info:    'fa-circle-info',
+        success: 'fa-circle-check',
+        warning: 'fa-triangle-exclamation',
+        error:   'fa-circle-xmark'
+      };
+      const container = document.getElementById('toastContainer');
+      const el        = document.createElement('div');
+      el.className    = `toast toast--${type}`;
+      el.innerHTML    = `<i class="fa ${icons[type]}"></i><span>${msg}</span>`;
+      container.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('toast--show'));
+      setTimeout(() => {
+        el.classList.remove('toast--show');
+        setTimeout(() => el.remove(), 400);
+      }, 3800);
+    }
+    window.showToast = showToast;
+
+
+    /* ── SCROLL REVEAL ── */
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('aos--revealed');
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('[data-aos]').forEach(el => revealObs.observe(el));
+
+  </script>
+
+</body>
+</html>
       
