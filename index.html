@@ -916,4 +916,186 @@
       </div>
 
       <!-- ── SIGNUP ── -->
+            <!-- ── SIGNUP ── -->
+      <div class="auth-panel hidden" id="signupPanel">
+        <h2 class="auth-title">Join FitOS Free</h2>
+        <p class="auth-sub">No credit card. No subscription. Just results.</p>
+
+        <form id="signupForm" class="auth-form" onsubmit="handleSignup(event)" novalidate>
+
+          <div class="form-group">
+            <label for="signupName">Full Name</label>
+            <input type="text" id="signupName"
+              placeholder="Your full name"
+              autocomplete="name" required />
+            <span class="field-error" id="signupNameErr"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="signupEmail">Email address</label>
+            <input type="email" id="signupEmail"
+              placeholder="you@example.com"
+              autocomplete="email" required />
+            <span class="field-error" id="signupEmailErr"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <div class="input-icon-wrap">
+              <input type="password" id="signupPassword"
+                placeholder="Min. 8 characters"
+                autocomplete="new-password" required
+                oninput="checkPasswordStrength(this.value)" />
+              <button type="button" class="icon-btn"
+                onclick="togglePass('signupPassword',this)"
+                aria-label="Toggle password visibility">
+                <i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div class="strength-wrap" id="strengthWrap" style="display:none">
+              <div class="strength-track">
+                <div class="strength-fill" id="strengthFill"></div>
+              </div>
+              <span class="strength-label" id="strengthLabel"></span>
+            </div>
+            <span class="field-error" id="signupPassErr"></span>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full" id="signupSubmitBtn">
+            <span class="btn-label">Create Free Account</span>
+            <span class="btn-spinner hidden">
+              <i class="fa fa-circle-notch fa-spin"></i>
+            </span>
+          </button>
+
+          <div class="auth-error-box hidden" id="signupErrorBox"></div>
+        </form>
+
+        <div class="auth-or"><span>or continue with</span></div>
+
+        <button class="btn btn--google btn--full" onclick="handleGoogleSignIn()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="" width="18" />
+          Continue with Google
+        </button>
+
+        <p class="auth-switch-text">
+          Already have an account?
+          <button class="link-btn" onclick="switchPanel('login')">Log in</button>
+        </p>
+      </div>
+
+
+      <!-- ── ONBOARDING ── -->
+      <div class="auth-panel hidden" id="onboardPanel">
+
+        <div class="onboard-top">
+          <span class="onboard-step-label" id="onboardStepLabel">Step 1 of 15</span>
+          <div class="onboard-track">
+            <div class="onboard-fill" id="onboardFill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="onboard-body" id="onboardBody">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div class="onboard-nav">
+          <button class="btn btn--ghost" id="onboardBackBtn"
+            onclick="onboardGoBack()" style="display:none">
+            <i class="fa fa-arrow-left"></i> Back
+          </button>
+          <button class="btn btn--primary" id="onboardNextBtn"
+            onclick="onboardGoNext()">
+            Next <i class="fa fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <!-- END AUTH MODAL -->
+
+
+  <!-- ═══════════════════════════════════════════════════
+       TOAST CONTAINER
+  ═══════════════════════════════════════════════════ -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SCRIPTS
+  ═══════════════════════════════════════════════════ -->
+  <script type="module" src="js/firebase-config.js"></script>
+  <script type="module" src="js/auth.js"></script>
+
+  <script>
+
+    /* ── LOADER ── */
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const l = document.getElementById('loader');
+        if (!l) return;
+        l.style.opacity = '0';
+        l.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => l.remove(), 500);
+      }, 1300);
+    });
+
+    /* ── NAVBAR SCROLL EFFECT ── */
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar')
+        .classList.toggle('navbar--scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── MOBILE MENU ── */
+    function toggleMobileMenu() {
+      document.getElementById('hamburger').classList.toggle('is-open');
+      document.getElementById('mobileMenu').classList.toggle('is-open');
+    }
+    function closeMobileMenu() {
+      document.getElementById('hamburger').classList.remove('is-open');
+      document.getElementById('mobileMenu').classList.remove('is-open');
+    }
+    window.toggleMobileMenu = toggleMobileMenu;
+    window.closeMobileMenu  = closeMobileMenu;
+
+    /* ── AUTH MODAL CONTROLS ── */
+    function openAuth(panel) {
+      document.getElementById('authOverlay').classList.add('is-active');
+      document.body.style.overflow = 'hidden';
+      switchPanel(panel || 'login');
+    }
+    function closeAuth() {
+      document.getElementById('authOverlay').classList.remove('is-active');
+      document.body.style.overflow = '';
+    }
+    function closeAuthOnOverlay(e) {
+      if (e.target.id === 'authOverlay') closeAuth();
+    }
+    function switchPanel(name) {
+      ['loginPanel', 'signupPanel', 'onboardPanel'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(name + 'Panel').classList.remove('hidden');
+    }
+    window.openAuth           = openAuth;
+    window.closeAuth          = closeAuth;
+    window.closeAuthOnOverlay = closeAuthOnOverlay;
+    window.switchPanel        = switchPanel;
+
+    /* ── PASSWORD VISIBILITY TOGGLE ── */
+    function togglePass(inputId, btn) {
+      const inp    = document.getElementById(inputId);
+      const hidden = inp.type === 'password';
+      inp.type     = hidden ? 'text' : 'password';
+      btn.querySelector('i').className = hidden
+        ? 'fa fa-eye-slash'
+        : 'fa fa-eye';
+    }
+    window.togglePass = togglePass;
+
+    /* ── PASSWORD STRENGTH INDICATOR ── */
+    {
       
