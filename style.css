@@ -1,0 +1,174 @@
+/* ═══════════════════════════════════════════════════
+   FITOS — GLOBAL STYLESHEET
+   Dark theme design system
+═══════════════════════════════════════════════════ */
+
+/* ── CSS VARIABLES ── */
+:root {
+  /* Colors */
+  --bg-base:       #080810;
+  --bg-card:       #0f0f1a;
+  --bg-card-2:     #13131f;
+  --bg-hover:      #1a1a2e;
+  --border:        rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.12);
+
+  --text-primary:   #f0f0ff;
+  --text-secondary: #9191aa;
+  --text-muted:     #55556a;
+
+  --accent-orange:  #f97316;
+  --accent-purple:  #a78bfa;
+  --accent-green:   #34d399;
+  --accent-blue:    #60a5fa;
+  --accent-red:     #f87171;
+  --accent-yellow:  #facc15;
+  --accent-teal:    #2dd4bf;
+  --accent-indigo:  #818cf8;
+
+  --gradient-primary: linear-gradient(135deg, #f97316, #a78bfa);
+  --gradient-glow:    linear-gradient(135deg, #f97316aa, #a78bfaaa);
+
+  /* Spacing */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+
+  /* Radius */
+  --r-sm:   6px;
+  --r-md:   12px;
+  --r-lg:   18px;
+  --r-xl:   24px;
+  --r-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow-lg: 0 24px 64px rgba(0,0,0,0.6);
+
+  /* Transitions */
+  --transition: 0.2s ease;
+  --transition-md: 0.35s ease;
+
+  /* Container */
+  --container-max: 1200px;
+  --container-pad: 24px;
+
+  /* Navbar height */
+  --nav-h: 70px;
+}
+
+/* ── RESET ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+ul { list-style: none; }
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* ── UTILITY ── */
+.hidden   { display: none !important; }
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+}
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── LOADER ── */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+}
+.loader__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.loader__icon {
+  font-size: 2.5rem;
+  animation: pulse 1s ease infinite;
+}
+.loader__wordmark {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.loader__bar-track {
+  width: 200px;
+  height: 3px;
+  background: var(--bg-card-2);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+.loader__bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--gradient-primary);
+  border-radius: var(--r-full);
+  animation: loadBar 1.2s ease forwards;
+}
+.loader__tagline {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+@keyframes loadBar {
+  to { width: 100%; }
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+
+/* ── LOGO ── */
+.logo-bolt {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+.logo-word {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: -0.03em;
+}
+
+/* ══════════════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════════════ */
