@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitOS — The World's Best Free Fitness Platform</title>
+  <meta name="description" content="FitOS is the world's best free fitness platform. AI coaching, Indian calorie tracking, personalized workout plans — all 100% free, forever." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta property="og:title" content="FitOS — Free Fitness OS" />
+  <meta property="og:description" content="AI coaching, calorie tracking, personalized plans. Free forever." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+
+  <!-- Firebase Init (Analytics) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAoI5qOWRRsN0aEXcdeUdaTQYUN2CGj2DA",
+      authDomain: "fitness-app-5aa0d.firebaseapp.com",
+      projectId: "fitness-app-5aa0d",
+      storageBucket: "fitness-app-5aa0d.firebasestorage.app",
+      messagingSenderId: "660756865454",
+      appId: "1:660756865454:web:a48aa0629e402ca773e83f",
+      measurementId: "G-96QM6C2VVR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    window.__firebaseApp = app;
+  </script>
+</head>
+
+<body class="dark-theme">
+
+  <!-- ═══════════════════════════════════════════════════
+       LOADING SCREEN
+  ═══════════════════════════════════════════════════ -->
+  <div id="loader" class="loader">
+    <div class="loader__logo">
+      <span class="loader__icon">⚡</span>
+      <span class="loader__wordmark">FitOS</span>
+    </div>
+    <div class="loader__bar-track">
+      <div class="loader__bar-fill"></div>
+    </div>
+    <p class="loader__tagline">Initializing your fitness OS...</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       NAVIGATION BAR
+  ═══════════════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__inner container">
+
+      <!-- Logo -->
+      <a href="index.html" class="navbar__logo">
+        <span class="logo-bolt">⚡</span>
+        <span class="logo-word">FitOS</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <ul class="navbar__links" id="navLinks">
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+        <li><a href="#compare" class="nav-link">Why FitOS</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+      </ul>
+
+      <!-- CTA Buttons -->
+      <div class="navbar__actions" id="navActions">
+        <button class="btn btn--ghost btn--sm" onclick="openAuth('login')">Log In</button>
+        <button class="btn btn--primary btn--sm" onclick="openAuth('signup')">Get Started — Free</button>
+      </div>
+
+      <!-- Hamburger for mobile -->
+      <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div class="navbar__mobile" id="mobileMenu">
+      <ul>
+        <li><a href="#features" onclick="closeMobileMenu()">Features</a></li>
+        <li><a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a></li>
+        <li><a href="#compare" onclick="closeMobileMenu()">Why FitOS</a></li>
+        <li><a href="about.html" onclick="closeMobileMenu()">About</a></li>
+        <li class="mobile-divider"></li>
+        <li><a href="#" onclick="openAuth('login'); closeMobileMenu();">Log In</a></li>
+        <li><a href="#" class="btn btn--primary btn--full" onclick="openAuth('signup'); closeMobileMenu();">Get Started Free</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════
+       HERO SECTION
+  ═══════════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <!-- Animated background -->
+    <div class="hero__bg" aria-hidden="true">
+      <div class="orb orb--orange"></div>
+      <div class="orb orb--purple"></div>
+      <div class="orb orb--blue"></div>
+      <div class="hero__grid-lines"></div>
+    </div>
+
+    <div class="container hero__container">
+
+      <!-- Left: Text Content -->
+      <div class="hero__text">
+        <div class="hero__badge">
+          <span class="badge-dot"></span>
+          <span>100% Free — No Subscriptions, No Ads</span>
+        </div>
+
+        <h1 class="hero__headline">
+          The <span class="gradient-text">World's Best</span><br />
+          Fitness Platform.<br />
+          <em class="hero__headline--sub">Finally Free.</em>
+        </h1>
+
+        <p class="hero__subtext">
+          MyFitnessPal charges ₹1,800/month. Other apps charge more.
+          <strong>FitOS gives you everything — AI coaching, Indian calorie tracking,
+          personalized plans, progressive overload — completely free, forever.</strong>
+        </p>
+
+        <div class="hero__buttons">
+          <button class="btn btn--primary btn--xl btn--glow" onclick="openAuth('signup')">
+            Start My Journey Free
+            <i class="fa fa-arrow-right"></i>
+          </button>
+          <button class="btn btn--ghost btn--xl" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+            <i class="fa fa-play-circle"></i>
+            See All Features
+          </button>
+        </div>
+
+        <div class="hero__trust-row">
+          <div class="trust-chip"><i class="fa fa-check-circle"></i> No credit card</div>
+          <div class="trust-chip"><i class="fa fa-check-circle"></i> No subscription</div>
+          <div class="trust-chip"><i class="fa fa-check-circle"></i> No ads ever</div>
+        </div>
+      </div>
+
+      <!-- Right: Floating Preview Cards -->
+      <div class="hero__visual" aria-hidden="true">
+
+        <!-- Calorie Ring Card -->
+        <div class="preview-card card--calories float-1">
+          <div class="pcard__header">
+            <i class="fa fa-fire" style="color:#f97316"></i>
+            <span>Today's Calories</span>
+          </div>
+          <div class="pcard__ring-wrap">
+            <svg class="pcard__ring" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#1e1e1e" stroke-width="10"/>
+              <circle cx="50" cy="50" r="42" fill="none"
+                stroke="url(#calGrad)" stroke-width="10"
+                stroke-dasharray="176 264" stroke-dashoffset="-66"
+                stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="calGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#f97316"/>
+                  <stop offset="100%" stop-color="#facc15"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="pcard__ring-label">
+              <strong>1,840</strong>
+              <small>/ 2,400 kcal</small>
+            </div>
+          </div>
+          <div class="pcard__macros">
+            <div class="macro-pill macro--protein">P <b>142g</b></div>
+            <div class="macro-pill macro--carbs">C <b>201g</b></div>
+            <div class="macro-pill macro--fat">F <b>52g</b></div>
+          </div>
+        </div>
+
+        <!-- AI Chat Card -->
+        <div class="preview-card card--ai float-2">
+          <div class="pcard__header">
+            <i class="fa fa-robot" style="color:#a78bfa"></i>
+            <span>FitOS AI Coach</span>
+            <span class="online-dot"></span>
+          </div>
+          <div class="pcard__chat">
+            <div class="chat-msg chat-msg--user">My knees hurt during squats 😟</div>
+            <div class="chat-msg chat-msg--ai">I've switched you to wall squats + leg press. Also added quad mobility work. You'll still build great legs — pain-free. 💪</div>
+          </div>
+        </div>
+
+        <!-- Streak Card -->
+        <div class="preview-card card--streak float-3">
+          <div class="pcard__header">
+            <i class="fa fa-bolt" style="color:#facc15"></i>
+            <span>Streak</span>
+          </div>
+          <div class="streak-number">14 🔥</div>
+          <div class="streak-label">Days Consistent</div>
+          <div class="streak-week">
+            <span class="sd sd--done">M</span>
+            <span class="sd sd--done">T</span>
+            <span class="sd sd--done">W</span>
+            <span class="sd sd--done">T</span>
+            <span class="sd sd--done">F</span>
+            <span class="sd sd--today">S</span>
+            <span class="sd">S</span>
+          </div>
+        </div>
+
+        <!-- Workout Card -->
+        <div class="preview-card card--workout float-4">
+          <div class="pcard__header">
+            <i class="fa fa-dumbbell" style="color:#34d399"></i>
+            <span>Today's Workout</span>
+          </div>
+          <ul class="workout-list">
+            <li class="wl-item wl-item--done">
+              <i class="fa fa-check-circle"></i>
+              <span>Bench Press — 4×10</span>
+              <span class="wl-cal">180 kcal</span>
+            </li>
+            <li class="wl-item wl-item--done">
+              <i class="fa fa-check-circle"></i>
+              <span>Pull-ups — 3×8</span>
+              <span class="wl-cal">120 kcal</span>
+            </li>
+            <li class="wl-item wl-item--active">
+              <i class="fa fa-circle-dot"></i>
+              <span>Squats — 4×12</span>
+              <span class="wl-cal">200 kcal</span>
+            </li>
+            <li class="wl-item">
+              <i class="fa fa-circle"></i>
+              <span>Plank — 3×60s</span>
+              <span class="wl-cal">60 kcal</span>
+            </li>
+          </ul>
+          <div class="workout-card-footer">
+            <span>560 kcal burned so far</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       FEATURES SECTION
+  ═══════════════════════════════════════════════════ -->
+  <section class="features" id="features">
+    <div class="container">
+
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-eyebrow">Everything You Need</span>
+        <h2 class="section-title">Every Feature.<br /><span class="gradient-text">Zero Cost.</span></h2>
+        <p class="section-desc">
+          We built everything the big fitness apps charge thousands of rupees for —
+          and made it completely free for everyone.
+        </p>
+      </div>
+
+      <!-- Feature Cards Grid -->
+      <div class="features-grid">
+
+        <!-- ── Feature 1: Indian Calorie Tracker (LARGE) ── -->
+        <div class="feat-card feat-card--large feat-card--orange" data-aos="fade-up">
+          <div class="feat-card__inner">
+            <div class="feat-icon feat-icon--orange">
+              <i class="fa fa-bowl-food"></i>
+            </div>
+            <h3 class="feat-title">Indian Calorie Tracker</h3>
+            <p class="feat-desc">
+              Log dal makhani, biryani, roti, paratha, samosa, dosa and 500+ Indian dishes
+              with precise calorie and macro data. Finally a calorie tracker that actually
+              knows our food.
+            </p>
+            <ul class="feat-list">
+              <li><i class="fa fa-check"></i> 500+ Indian foods — North, South, Street food</li>
+              <li><i class="fa fa-check"></i> Precise protein, carbs, fats per serving</li>
+              <li><i class="fa fa-check"></i> Regional variants (e.g. Punjabi vs Kerala)</li>
+              <li><i class="fa fa-check"></i> Homemade recipe calculator</li>
+              <li><i class="fa fa-check"></i> Smart food suggestions to hit daily goal</li>
+              <li><i class="fa fa-check"></i> Visual macro breakdown rings</li>
+            </ul>
+            <a href="#" class="feat-cta" onclick="openAuth('signup')">
+              Start tracking <i class="fa fa-arrow-right"></i>
+            </a>
+          </div>
+          <div class="feat-card__visual feat-card__visual--food">
+            <div class="food-log-demo">
+              <div class="food-entry">
+                <span class="food-emoji">🍛</span>
+                <div class="food-info">
+                  <span class="food-name">Dal Makhani (1 bowl)</span>
+                  <span class="food-cals">320 kcal • P:14g C:38g F:12g</span>
+                </div>
+              </div>
+              <div class="food-entry">
+                <span class="food-emoji">🫓</span>
+                <div class="food-info">
+                  <span class="food-name">Whole Wheat Roti (2 pieces)</span>
+                  <span class="food-cals">180 kcal • P:6g C:34g F:2g</span>
+                </div>
+              </div>
+              <div class="food-entry">
+                <span class="food-emoji">🥛</span>
+                <div class="food-info">
+                  <span class="food-name">Paneer (100g)</span>
+                  <span class="food-cals">265 kcal • P:18g C:4g F:20g</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Feature 2: AI Chatbot (LARGE) ── -->
+        <div class="feat-card feat-card--large feat-card--purple" data-aos="fade-up" data-aos-delay="80">
+          <div class="feat-card__inner">
+            <div class="feat-icon feat-icon--purple">
+              <i class="fa fa-robot"></i>
+            </div>
+            <h3 class="feat-title">Gemini AI Fitness Coach</h3>
+            <p class="feat-desc">
+              Ask anything about fitness, nutrition, recovery, or injuries. Our AI searches
+              a massive database and gives you expert, personalized answers — not generic copy-paste.
+            </p>
+            <ul class="feat-list">
+              <li><i class="fa fa-check"></i> Powered by Google Gemini AI</li>
+              <li><i class="fa fa-check"></i> Knows your personal stats, goals, injuries</li>
+              <li><i class="fa fa-check"></i> Exercise form, nutrition, sleep, recovery</li>
+              <li><i class="fa fa-check"></i> Understands Indian food and lifestyle</li>
+              <li><i class="fa fa-check"></i> Adapts your plan based on your problems</li>
+              <li><i class="fa fa-check"></i> Available 24/7, unlimited questions</li>
+            </ul>
+            <a href="#" class="feat-cta" onclick="openAuth('signup')">
+              Talk to AI Coach <i class="fa fa-arrow-right"></i>
+            </a>
+          </div>
+          <div class="feat-card__visual feat-card__visual--chat">
+            <div class="chat-demo">
+              <div class="chat-demo-msg chat-demo-msg--user">I'm not losing weight even though I'm working out every day</div>
+              <div class="chat-demo-msg chat-demo-msg--ai">
+                <span class="ai-label">FitOS AI</span>
+                Working out daily without weight loss usually means you're eating more than you think — especially liquid calories. Let me analyse your logs... Your calorie intake averages 2,620 kcal but your goal is 2,000. I'll suggest 3 easy food swaps to close this gap without feeling deprived.
+              </div>
+              <div class="chat-demo-msg chat-demo-msg--user">My shoulder hurts during bench press</div>
+              <div class="chat-demo-msg chat-demo-msg--ai">
+                <span class="ai-label">FitOS AI</span>
+                Switching bench press to incline dumbbell press + cable flyes. This protects the rotator cuff while still building chest. Also adding 5 min shoulder mobility warm-up to every push day. 💪
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Feature 3: Personalized Plan ── -->
+        <div class="feat-card feat-card--medium feat-card--green" data-aos="fade-up">
+          <div class="feat-icon feat-icon--green">
+            <i class="fa fa-clipboard-list"></i>
+          </div>
+          <h3 class="feat-title">Personalized Workout Plan</h3>
+          <p class="feat-desc">
+            Answer 15 questions at signup about your body, goals, schedule, injuries,
+            and equipment. FitOS builds a custom plan made specifically for you — not a
+            generic beginner routine everyone gets.
+          </p>
+          <div class="feat-tags">
+            <span class="feat-tag">Goal-based</span>
+            <span class="feat-tag">Equipment-aware</span>
+            <span class="feat-tag">Injury-safe</span>
+            <span class="feat-tag">Schedule-fit</span>
+          </div>
+        </div>
+
+        <!-- ── Feature 4: Progressive Overload ── -->
+        <div class="feat-card feat-card--medium feat-card--blue" data-aos="fade-up" data-aos-delay="80">
+          <div class="feat-icon feat-icon--blue">
+            <i class="fa fa-chart-line"></i>
+          </div>
+          <h3 class="feat-title">Smart Progressive Overload</h3>
+          <p class="feat-desc">
+            Struggling with an exercise? Tap the "Too Hard" button. Tell FitOS why —
+            injury, fatigue, bad form, or too much weight — and it instantly swaps the
+            exercise with a smarter alternative at the right level.
+          </p>
+          <div class="feat-tags">
+            <span class="feat-tag">Injury detection</span>
+            <span class="feat-tag">Auto-regressed</span>
+            <span class="feat-tag">Form guidance</span>
+          </div>
+        </div>
+
+        <!-- ── Feature 5: 21-Day Progress Check ── -->
+        <div class="feat-card feat-card--medium feat-card--red" data-aos="fade-up" data-aos-delay="0">
+          <div class="feat-icon feat-icon--red">
+            <i class="fa fa-calendar-check"></i>
+          </div>
+          <h3 class="feat-title">21-Day Progress Check-Ins</h3>
+          <p class="feat-desc">
+            Every 21 days, FitOS checks in. How many pushups can you do now? What's your
+            weight? It re-analyses your progress and updates your plan so you never hit a
+            plateau.
+          </p>
+          <div class="feat-tags">
+            <span class="feat-tag">Auto-adjusting</span>
+            <span class="feat-tag">Plateau prevention</span>
+            <span class="feat-tag">Progress tracking</span>
+          </div>
+        </div>
+
+        <!-- ── Feature 6: Calories Burned ── -->
+        <div class="feat-card feat-card--medium feat-card--yellow" data-aos="fade-up" data-aos-delay="80">
+          <div class="feat-icon feat-icon--yellow">
+            <i class="fa fa-fire-flame-curved"></i>
+          </div>
+          <h3 class="feat-title">Accurate Calories Burned</h3>
+          <p class="feat-desc">
+            Real-time calorie burn based on your weight, exercise type, duration, and MET
+            values — the same science used by hospitals and sports scientists. No wearable
+            required.
+          </p>
+          <div class="feat-tags">
+            <span class="feat-tag">MET-based science</span>
+            <span class="feat-tag">Body-weight aware</span>
+            <span class="feat-tag">300+ exercises</span>
+          </div>
+        </div>
+
+        <!-- ── Feature 7: Secure User Data ── -->
+        
